@@ -1,0 +1,60 @@
+ .ORG $5cbb
+ 
+ 
+ JSR $C408
+ LDA #$0c
+ JSR $e4df
+ ASL
+ ASL
+ ASL
+ BPL END
+ LDA #$c0
+ STA $05
+ LDA #$00
+ STA $06
+ JSR $C408
+ ASL $00
+ ROL $01
+ ROL $02
+END
+ LDA #$0c
+ JSR $e4df
+ ASL
+ ASL
+ ASL
+ ASL
+ BPL next
+ LDA #$c0
+ STA $05
+ LDA #$00
+ STA $06
+ JSR $C408
+next
+ LDA $00
+ PHA
+ LDA $01
+ PHA
+ LDA #$00
+ STA $01
+ STA $02
+ STA $07
+ STA $08
+ JSR $e030
+ LDA $6675,y
+ STA $00
+ LDA #$02
+ STA $06
+ JSR $c470
+ LDA $00
+ EOR #$ff
+ STA $05
+ LDA #$00
+ STA $06
+ STA $02
+ PLA
+ STA $01
+ PLA
+ STA $00
+ JSR $c408
+ RTS
+ 

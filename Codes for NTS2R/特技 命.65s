@@ -1,0 +1,17 @@
+ .org $59d0
+
+
+ PHA
+ LDA #$14
+ JSR $e4df
+ LSR
+ BCC end
+ PLA
+e
+ JMP $9d8c
+end
+ PLA
+ CMP #$0d
+ BCS e
+ jmp $9d77
+ 

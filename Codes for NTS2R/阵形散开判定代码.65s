@@ -1,0 +1,30 @@
+ .ORG $5d24
+ LDA $6034
+ bne end
+ LDA $6036
+ bne end
+ LDA $6768
+ BEQ end
+
+ RTS
+end
+ PLA
+ PLA
+ JMP $9e66
+ 
+ LDA $6034
+ bne end1
+ LDA $6036
+ bne end1
+ LDA $6769
+ BEQ end1
+
+ RTS
+end1
+ PLA
+ PLA
+ JMP $9ea8
+ 
+ 
+ 
+ 

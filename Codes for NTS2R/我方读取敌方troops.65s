@@ -1,0 +1,71 @@
+ .ORG $b273
+ STA $09
+ JSR $c759
+ LDA #$7c
+ JSR $c6e5
+ LDY $09
+ LDX $08
+ LDA $9000,y
+ STA $6651,x
+ LDA $9080,y
+ STA $6652,x
+ LDA $9100,y
+ sta $6653,x
+ JSR $8b80
+ JSR $c770
+ .db $e3,$b2
+ 
+
+  .ORG $8b80
+ CPY #$10
+ bcs jieshu
+ STY $580b
+ STX $580c
+ LDA $602b
+ sta $580d
+ LDA #$00
+ STA $580a
+wuxianxunhuan
+ INC $580a
+ lda $580a
+ CMP $580d
+ BEQ jieshu
+ LDY #$00
+ LDA $580a
+bijiao
+ CMP $5800,y ;0A 14 1E 28 32 3C 46 50 5A 64
+ BCC zhengchangtianjia
+ INY
+ BNE bijiao
+ 
+zhengchangtianjia
+ TYA
+ ASL
+ ASL
+ ASL
+ ASL
+ ADC $580b
+ TAY
+ LDA $9180,y
+ STA $00
+ LDA $9220,y
+ sta $01
+ LDA $92c0,y
+ STA $02
+ LDX $580c
+ LDA $6651,x
+ CLC
+ ADC $00
+ STA $6651,X
+ LDA $6652,x
+ ADC $01
+ STA $6652,X
+ LDA $6653,x
+ ADC $02
+ STA $6653,X
+ JMP wuxianxunhuan
+ 
+jieshu
+ RTS
+ 
+ 

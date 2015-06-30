@@ -1,0 +1,103 @@
+;7974b 代码设置成 20 1b 5c即可
+ .ORG $5c1b
+ 
+ LDA $662B
+ BNE ZHENXING
+ JMP jieshu2
+ZHENXING
+ LDA $75
+ BMI zabing
+ TAY
+ pha
+ lda #$7c
+ jsr $c6e5
+ pla
+ LDA $8180,y
+ STA $6769
+ 
+ pha
+ jsr $c6e1
+ PLA
+ PHA
+ CMP #$09
+ bcc tiaozhuan
+ LDA $ac
+aaa1
+ ADC $ad
+ inc $ad
+ AND #$0f
+ CMP #$05
+ BCC aaa1
+ CMP #$09
+ BCS aaa1
+ STA $67af
+ 
+ INC $af
+aaa2
+ lda $af
+ inc $af
+ AND #$0f
+ CMP #$05
+ BCC aaa2
+ CMP #$09
+ BCS aaa2
+ CMP $67af
+ beq aaa2
+ STA $67ad 
+
+ 
+tiaozhuan
+ PLA
+ jmp jieshu
+ 
+zabing:
+ LDA $ac
+beishuichuwai
+ ADC $ad
+ INC $ad
+ AND #$07
+ CMP #$07
+ beq beishuichuwai
+ STA $6769
+ 
+jieshu
+ ASL
+ PHA
+jisuan
+ PLA
+ PHA
+ CLC
+ LDA #$15
+ ADC $6769
+ STA $4d
+ JSR $d277
+ .DB $a2
+ .DB $00
+ 
+ lda #$00
+ STA $4d
+ PLA
+ TAY
+ lda #$80
+ JSR $f315
+ CLC
+ LDA #$15
+ ADC $6769
+ CMP #$1d
+ BNE jieshu2
+ LDA #$14
+ STA $5b
+ LDX #$05
+nullxunhuan
+ ASL $0506,x
+ LDA $5b
+ LSR
+ ROR $0506,x
+ INX
+ CPX #$0a
+ bne nullxunhuan
+ 
+jieshu2
+ JSR $ff93
+ RTS
+ 

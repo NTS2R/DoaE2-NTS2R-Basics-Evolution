@@ -1,0 +1,14 @@
+ .ORG $579d
+ TYA
+ PHA
+ LDY #$15
+ LDA ($f3),y
+ AND #$08
+ LSR
+ LSR
+ adc #$64
+ JSR $c6e5
+ PLA
+ TAY
+ RTS
+ 

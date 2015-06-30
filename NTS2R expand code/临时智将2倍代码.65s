@@ -1,0 +1,13 @@
+ .ORG $5929
+ JSR $C408
+ LDA #$0c
+ JSR $e4df
+ ASL
+ ASL
+ ASL
+ BPL END
+ ASL $00
+ ROL $01
+ ROL $02
+END
+ RTS

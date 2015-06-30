@@ -1,0 +1,34 @@
+ .ORG $59e5
+ 
+ LDY #$1f
+xunhuan1
+ CMP $58e0,y
+ BEQ next1
+ DEY
+ BPL xunhuan1
+ RTS
+next1
+ PLA
+ PLA
+ PLA
+ LDA $9d
+ AND #$03
+ STA $7c
+ INC $7c
+ INC $7c
+ JMP $9e0d
+ 
+ LDY #$1f
+xunhuan2
+ CMP $58c0,y
+ BEQ next2
+ DEY
+ BPL xunhuan2
+ RTS
+next2
+ PLA
+ PLA
+ LDA #$05
+ STA $7c
+ JMP $9e0d
+ 

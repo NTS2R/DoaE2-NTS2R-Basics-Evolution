@@ -1,0 +1,154 @@
+ ;计数内存 6036 6037
+ .ORG $5d4e
+ 
+ 
+ 
+ LDX $78
+ LDA $6770,x
+ BEQ endless
+ CMP #$2f
+ BEQ jixu
+ CMP #$26
+ BEQ jixu
+ CMP #$25
+ BEQ jixu
+ 
+ CMP #$10
+ BCC jixu
+endless
+ JMP $9f02
+ 
+jixu
+ LDA $6036
+ BEQ jixu2
+ 
+ 
+ 
+ JMP gongji
+ 
+jixu2
+ LDA #$0c
+ JSR $e4df
+ AND #$07
+ TAX
+ LDA $57c8,x;读取武器本身攻击次数
+ CLC
+ STA $6036
+ STA $6037
+ 
+ LDY $4a
+ LDA $6621,y
+ TAY
+ PHA
+ LDA #$7c
+ JSR $c6e5
+ PLA
+ LDA $b200,Y;读取武将攻击次数
+ CLC
+ ADC $6036
+ STA $6036
+ STA $6037
+ PHA
+ JSR $c6e1
+ PLA
+ 
+  LDA $7a
+ BNE aaaa;判断人物归属(敌方/我方)
+ JSR $e035
+ TYA
+ ASL
+ ASL
+ TAX
+ LDA $6174,x;读取装备武器参数
+ TAX
+ PHA
+ lda #$7c
+ jsr $c6e5
+ PLA
+ CMP #$00
+ beq aaaaaaa2
+ LDA $b280,x
+ CLC
+ ADC $6036
+ STA $6036
+ STA $6037
+aaaaaaa2:
+ PHA
+ JSR $c6e1
+ PLA
+aaaa:
+ LDA $7a
+ BNE aaaa3;判断人物归属(敌方/我方)
+ LDA $6768
+ JMP aaaa4
+aaaa3:
+ LDA $6769
+aaaa4:
+ TAX
+ LDA $57b0,x
+ CLC
+ ADC $6036
+ STA $6036
+ STA $6037
+
+ LDA #$0c
+ JSR $E4DF
+ ASL
+ ASL
+ ASL
+ ASL
+ BPL aaa 
+ ASL $6036
+ ASL $6037
+ 
+aaa
+ LDA $4a
+ tax
+ LDY $ff60,x
+ LDX #$05
+jianchaxunhuan:
+ LDA $60cc,y
+ CMP #$ce
+ BEQ shuangbei
+ DEX
+ INY
+ TXA
+ BNE jianchaxunhuan
+ JMP gongji
+shuangbei:
+ ASL $6036
+ ASL $6037
+
+gongji
+ DEC $6036
+ BNE gongji2
+ JMP $9f02
+gongji2
+ LDA #$14
+ JSR $E4DF
+ BPL zhengchanggongji;正常攻击
+ssssss
+ LDX $78
+ INC $6754,x
+ LDA $6754,x
+ AND #$7f
+kkkk
+ STa $79
+ STa $67a2
+ STA $6754,x
+ CMP #$05
+ BEQ aaaaaa
+ CMP #$0a
+ BEQ aaaaaa
+ 
+zhengchanggongji
+ JSR $A862
+ JMP $9D2C
+aaaaaa
+ SEC
+ SBC #$05
+ STa $79
+ STa $67a2
+ STA $6754,x
+ bpl zhengchanggongji
+ 

@@ -1,0 +1,17 @@
+ .ORG $59ba
+ 
+ LDA #$14
+ JSR $e4df
+ LSR
+ LSR
+ LSR
+ LSR
+ BCC end
+ PLA
+ PLA
+ JMP $a583
+end
+ LDX $78
+ LDA $66a5,x
+ RTS
+ 

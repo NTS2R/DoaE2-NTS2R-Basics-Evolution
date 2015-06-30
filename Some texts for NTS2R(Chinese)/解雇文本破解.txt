@@ -1,0 +1,93 @@
+70B96
+
+707F0
+
+A:0B X:20 Y:FF S:5C P:NvUbdizc    $8FDA:A2 1B     LDX #$1B
+A:0B X:1B Y:FF S:5C P:nvUbdizc    $8FDC:20 03 CB  JSR $CB03
+A:0B X:1B Y:FF S:5A P:nvUbdizc      $CB03:20 4E CB  JSR $CB4E
+
+ 1E:8FDA:A2 1B     LDX #$1B
+ 1E:8FDC:20 03 CB  JSR $CB03
+ 1E:8FDF:90 06     BCC $8FE7
+ 1E:8FE1:20 77 D2  JSR $D277
+ 1E:8FE4:48        PHA
+ 1E:8FE5:00        BRK
+ 1E:8FE6:60        RTS -----------------------------------------
+ 1E:8FE7:20 43 C3  JSR $C343
+ 1E:8FEA:A5 5B     LDA $005B = #$00
+ 1E:8FEC:C9 02     CMP #$02
+ 1E:8FEE:F0 0B     BEQ $8FFB
+ 1E:8FF0:AE 20 64  LDX $6420 = #$00
+ 1E:8FF3:D0 06     BNE $8FFB
+ 1E:8FF5:20 77 D2  JSR $D277
+ 1E:8FF8:58        CLI
+ 1E:8FF9:00        BRK
+ 1E:8FFA:60        RTS -----------------------------------------
+
+ 1E:8FE6:60        RTS -----------------------------------------
+ 1E:8FE7:20 43 C3  JSR $C343
+ 1E:8FEA:A5 5B     LDA $005B = #$03
+ 1E:8FEC:C9 02     CMP #$02
+ 1E:8FEE:F0 03     BEQ $8FF3
+ 1E:8FF0:4C 15 B4  JMP $B415
+ 1E:8FF3:20 B3 C3  JSR $C3B3
+ 1E:8FF6:5E 90 B7  LSR $B790,X @ $B7D3 = #$4D
+ 1E:8FF9:90 5B     BCC $9056
+ 1E:8FFB:91 D7     STA ($D7),Y @ $0000 = #$44
+ 1E:8FFD:B1 EA     LDA ($EA),Y @ $000A = #$00
+ 1E:8FFF:EA        NOP
+ 1E:9000:EA        NOP
+ 1E:9001:EA        NOP
+ 1E:9002:EA        NOP
+ 1E:9003:EA        NOP
+
+ 1E:B415:AE 20 64  LDX $6420 = #$01
+ 1E:B418:D0 06     BNE $B420
+ 1E:B41A:20 77 D2  JSR $D277
+ 1E:B41D:58        CLI
+ 1E:B41E:00        BRK
+ 1E:B41F:60        RTS -----------------------------------------
+ 1E:B420:4C F3 8F  JMP $8FF3
+
+  078FEA
+
+02 03 08 FA B0 2B 59 FA B1 1B 1C FA B1 1E 26 FA B2 44 B5 41 FF
+
+ 1E:915B:AD 6F 60  LDA $606F = #$00 6030-606F
+
+ 1E:915B:AD BF 64  LDA $64BF = #$00
+
+ 1E:B1D7:20 77 D2  JSR $D277
+ 1E:B1DA:E9 07     SBC #$07
+『你要解雇谁
+ 1E:B1DC:20 12 92  JSR $9212
+ 1E:B1DF:AD 28 66  LDA $6628 = #$01
+ 1E:B1E2:A0 07     LDY #$07
+ 1E:B1E4:D9 F7 B1  CMP $B1F7,Y @ $B1F7 = #$01
+ 1E:B1E7:F0 05     BEQ $B1EE
+ 1E:B1E9:88        DEY
+ 1E:B1EA:10 F8     BPL $B1E4
+ 1E:B1EC:30 06     BMI $B1F4
+ 1E:B1EE:20 3D CB  JSR $CB3D
+ 1E:B1F1:EA        NOP
+ 1E:B1F2:07        UNDEFINED
+『F5殿下不能被解雇
+ 1E:B1F3:60        RTS -----------------------------------------
+ 1E:B1F4:4C B5 BB  JMP $BBB5
+
+ 1E:BBB5:A5 F3     LDA $00F3 = #$00
+ 1E:BBB7:0A        ASL
+ 1E:BBB8:0A        ASL
+ 1E:BBB9:0A        ASL
+ 1E:BBBA:65 5B     ADC $005B = #$03
+ 1E:BBBC:BC 20 64  LDY $6420,X @ $6463 = #$00
+ 1E:BBBF:A9 90     LDA #$90
+ 1E:BBC1:99 00 62  STA $6200,Y @ $6200 = #$80
+ 1E:BBC4:A9 00     LDA #$00
+ 1E:BBC6:9D 20 64  STA $6420,X @ $6463 = #$00
+ 1E:BBC9:20 82 92  JSR $9282
+ 1E:BBCC:20 3D CB  JSR $CB3D
+ 1E:BBCF:EB        UNDEFINED
+ 1E:BBD0:07        UNDEFINED
+『F5被解雇了
+ 1E:BBD1:60        RTS -----------------------------------------

@@ -1,0 +1,138 @@
+;79ec0 设置成 4c 25 5b
+;$6034 行动次数判定 
+;$6035 总行次数判定 新内存计数
+ .ORG $5b25
+ LDA #$40
+ STA $6740,X;确定武将行动完毕
+ 
+ LDA $6034
+ BEQ jixu ;判断6034的值 
+ JMP weizhi1
+ 
+jixu
+ LDA #$0c
+ JSR $e4df
+ AND #$07
+ TAX
+ LDA $57c0,x;读取武器本身攻击次数
+ CLC
+ STA $6034
+ STA $6035
+ 
+ LDY $4a
+ LDA $6621,y
+ TAY
+ PHA
+ LDA #$7c
+ JSR $c6e5
+ PLA
+ LDA $8000,Y;读取武将攻击次数
+ CLC
+ ADC $6034
+ STA $6034
+ STA $6035
+ PHA
+ JSR $c6e1
+ PLA
+ 
+ LDA $7a
+ BNE aaaa;判断人物归属(敌方/我方)
+ JSR $e035
+ TYA
+ ASL
+ ASL
+ TAX
+ LDA $6174,x;读取装备武器参数
+ TAX
+ PHA
+ lda #$7c
+ jsr $c6e5
+ PLA
+ CMP #$00
+ beq aaaaaaa2
+ LDA $8080,x
+ CLC
+ ADC $6034
+ STA $6034
+ STA $6035
+aaaaaaa2:
+ PHA
+ JSR $c6e1
+ PLA
+aaaa:
+ LDA $7a
+ BNE aaaa3;判断人物归属(敌方/我方)
+ LDA $6768
+ JMP aaaa4
+aaaa3:
+ LDA $6769
+aaaa4:
+ TAX
+ LDA $57d0,x
+ CLC
+ ADC $6034
+ STA $6034
+ STA $6035
+
+ LDA #$0c
+ JSR $E4DF
+ ASL
+ BPL aaa 
+ ASL $6034
+ ASL $6035
+ 
+aaa
+ LDA $4a
+ tax
+ LDY $ff60,x
+ LDX #$05
+jianchaxunhuan:
+ LDA $60cc,y
+ CMP #$ce
+ BEQ shuangbei
+ DEX
+ INY
+ TXA
+ BNE jianchaxunhuan
+ JMP weizhi1
+shuangbei:
+ ASL $6034
+ ASL $6035
+ 
+ 
+weizhi1:
+ LDA #$00
+ LDX $0078
+ STA $6740,x
+ DEC $6034
+ BNE weizhi2;继续运算
+ LDA #$40
+ STA $6740,x
+ JMP $9f02
+weizhi2:
+ LDA #$14
+ JSR $E4DF
+ BPL zhengchanggongji;正常攻击
+ LDX $78
+ LDA $6754,x
+ CMP #$09
+ bcc AAAAAAAA
+ LDA #$04
+ STA $6754,x
+ JMP a1
+AAAAAAAA
+ CMP #$04
+ bcc a1
+ LDA #$ff
+ STA $6754,x
+ 
+a1:
+ INC $6754,x
+
+zhengchanggongji:
+ LDY $78
+ LDx $6754,y
+ INC $5810,x
+ JSR $a862
+ JMP $9d38
+

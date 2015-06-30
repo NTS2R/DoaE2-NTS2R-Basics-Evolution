@@ -1,0 +1,303 @@
+
+========================
+=　Mapper 004　　　　　=
+========================
+
+翻译：KASURA·J
+
+又名：
+--------------------------
+MMC3
+TxROM
+(MMC6)
+(HxROM)
+
+
+样本游戏:
+--------------------------
+Mega Man 3, 4, 5, 6
+Kirby's Adventure
+Gauntlet
+Rad Racer 2
+Startropics 1, 2 (MMC6)
+Super Mario Bros. 2, 3
+... 还有许多其他游戏 (最常见的mapper)
+
+
+四屏幕手记:
+---------------------------
+TR1ROM 和 TVROM 是两种 *十分稀有的* 使用四屏幕的板子。唯一使用四屏幕的mapper4游戏是 Rad Racer 2 和 Gauntlet。　
+其他的几个游戏是标错了四屏幕，实际上并不是（比如：Gauntlet 2)。
+
+TR1ROM 和 TVROM 都以WRAM为VRAM作为命名表。然而这就意味着WRAM不与CPU连接，因此它们没有WRAM/SRAM！
+
+所以这么做是 "安全的":
+- 当自制时:　四屏幕与WRAM选择其一。不可兼得
+- 当模拟时:　当为四屏幕时要恒屏蔽WRAM，这样任何游戏都不会崩溃。
+
+这个板子的四屏幕是硬接的!　当为四屏幕时，你的模拟器必须忽略对接法的操作。
+
+还要注意有许多广为流传的Rad Racer 2并没有标明是四屏幕.所以如果你尝试模拟这些游戏
+并且花屏了，这是你第一个要检查的地方。
+
+IRQ 手记:
+---------------------------
+此mapper的IRQ 操作乍一看很简单，然而要想准确的操作却是十分复杂。
+此mapper由于精确模拟的超高难度而声名狼藉(即便不是最难的)--不过祸不单行，因为这也是最常见的mapper。
+
+你要保证阅读了下面的 '基本IRQ操作'，而且我也十分严肃的建议你考虑一下撇开'IRQ操作细节'-- 除非你开发模拟器。
+
+
+
+其他手记:
+---------------------------
+Low G Man会明确确认WRAM是否屏蔽，如果没有屏蔽就会崩溃。所以如果你的模拟器忽略WRAM屏蔽, Low G Man 将会
+崩溃(具体是在, 第一关的BOSS战)。
+
+
+
+寄存器:
+---------------------------
+
+范围,掩码:　 $8000-FFFF, $E001
+
+
+　$8000:　[CP.. .AAA]
+　　C = CHR 模式选择 (详见 CHR 设置)
+　　P = PRG 模式选择 (详见 PRG 设置)
+　　A = $8001的操作地址
+
+
+　$8001:　[DDDD DDDD]　--　数据端口
+　　　R:0 ->　CHR reg 0
+　　　R:1 ->　CHR reg 1
+　　　R:2 ->　CHR reg 2
+　　　R:3 ->　CHR reg 3
+　　　R:4 ->　CHR reg 4
+　　　R:5 ->　CHR reg 5
+　　　R:6 ->　PRG reg 0
+　　　R:7 ->　PRG reg 1
+
+
+　$A000:　[.... ...M]
+　　接法:　0=处置
+　　　　　 1=水平
+
+　　当为四屏幕时忽略
+
+
+　$A001:　[EW.. ....]
+　　E = WRAM使能 (0=屏蔽, 1=启用)
+　　W = WRAM写保护 (0=可写, 1=不可写)
+
+
+　$C000:　[IIII IIII]　　IRQ 重读值
+　$C001:　[.... ....]　　IRQ 清除
+　$E000:　[.... ....]　　IRQ 承认 / 屏蔽
+　$E001:　[.... ....]　　IRQ 启用
+
+
+CHR 设置:
+---------------------------
+
+　　　　　　　 $0000　 $0400　 $0800　 $0C00　 $1000　 $1400　 $1800　 $1C00 
+　　　　　　 +---------------+---------------+-------+-------+-------+-------+
+CHR 模式 0:　|　　 <R:0>　　 |　　 <R:1>　　 |　R:2　|　R:3　|　R:4　|　R:5　|
+　　　　　　 +---------------+---------------+---------------+---------------+
+CHR 模式 1:　|　R:2　|　R:3　|　R:4　|　R:5　|　　 <R:0>　　 |　　 <R:1>　　 |
+　　　　　　 +-------+-------+-------+-------+---------------+---------------+
+
+PRG 设置:
+---------------------------
+
+　　　　　　　 $8000　 $A000　 $C000　 $E000　
+　　　　　　 +-------+-------+-------+-------+
+PRG 模式 0:　|　R:6　|　R:7　| { -2} | { -1} |
+　　　　　　 +-------+-------+-------+-------+
+PRG 模式 1:　| { -2} |　R:7　|　R:6　| { -1} |
+　　　　　　 +-------+-------+-------+-------+
+
+
+基本 IRQ 操作
+---------------------------
+
+MMC3 IRQ利用扫描线计数器。以下是基本使用步骤:
+
+1)　向$C000写入你需要定时的扫描线N
+2)　向$C001写入任意值复位IRQ计数器
+3)　向$E001写入任意值启用IRQ
+
+An IRQ will then fire after N+1 rendered scanlines, at which point, you would write any value to $E000 to
+acknowledge the IRQ, and disable further IRQs (and possibly repeat the above 3 steps if you want to fire
+another IRQ this frame).
+
+The MMC3 counts scanlines by watching the CHR accesses the NES makes.　Therefore in order for this IRQ
+counter to work properly, the NES must be making the accesses that the MMC3 is expecting.　If you have
+abnormal settings, you will confuse the MMC3 and IRQs will not work properly.　Therefore, you must follow
+these rules:
+
+1)　The IRQ counter will only count when the PPU is on (sprites and/or BG enabled).
+2)　Do not manipulate $2006 or $2007 while using IRQ counter
+3)　Do not set $C000 to $00
+4)　BG and Sprites must use opposing pattern tables for CHR.　EG:
+　 a)　if 8x16 sprites, BG must use $0xxx, *ALL* sprites must use $1xxx
+　 b)　if 8x8 sprites, if BG is using $0xxx, sprites must use $1xxx
+　 c)　if 8x8 sprites, if BG is using $1xxx, sprites must use $0xxx　 (slightly abnormal)
+
+With settings 'a' and 'b', the IRQ will occur after dot 260.　With setting 'c', it will occur after dot 324
+of the *previous* scanline.
+
+
+The IRQ Counter consists of several parts:
+1)　Actual 8-bit IRQ counter (not directly accessable)
+2)　8-bit latch, or reload value (reg $C000)
+3)　IRQ Enable flag
+4)　IRQ Pending flag
+
+IRQ Registers interact with the above parts as follows:
+　reg $C000 - sets IRQ Reload value
+　reg $C001 - sets the actual IRQ counter to 0 (regardless of what value is written)
+　reg $E000 - clears both IRQ Enable flag and IRQ Pending flag
+　reg $E001 - sets IRQ Enable flag
+
+Every time the MMC3 detects a scanline, the following IRQ Counter logic is executed.　Note this occurs EVEN
+IF IRQs are disabled (the IRQ counter is always counting):
+
+- If IRQ Counter is 0...
+　　 a)　reload IRQ counter with IRQ Reload value
+
+- Otherwise...
+　　 a)　Decrement IRQ counter by 1
+　　 b)　If IRQ counter is now 0 and IRQs are enabled, trigger IRQ
+
+Note that 241 scanlines are counted per frame (the 240 rendered scanlines, and the "prerender" scanline).
+
+
+
+
+
+IRQ操作细节
+---------------------------
+
+MMC3 依赖监控PPU总线的 A12 ($1000) 来侦测扫描线。每当产生上跳变 (由0变为1)，并且两次跳变不能间隔太近，IRQ计数器
+就会计时。
+
+在*正常*情况下 (BG 使用 $0xxx, 精灵使用 $1xxx), A12 在一线会产生8次跳变
+(一次对应一个精灵 CHR fetch).　然而由于8次跳变太过接近所以只有第一次 '会被看见'。
+
+During rendering and pre-render scanlines the PPU is fetching NT and CHR data from the cart through a series
+of reads.　Each read updates the PPU Address lines (including A12), and each read takes 2 PPU cycles (2
+dots).　There are 4 reads per tile, and 42 tiles per scanline:
+
+- 32 BG tiles
+- 8 Sprite tiles (for the next scanline)
+- 2 BG tiles (for the next scanline)
+
+
+Each tile requires 4 reads, each read is 2 dots:
+dot 0:　Name table fetch ($2xxx -- A12 is low)
+dot 2:　Attribute fetch　($2xxx -- A12 is low)
+dot 4:　Low CHR fetch　　($0xxx or $1xxx -- A12 is low or high)
+dot 6:　High CHR fetch　 ($0xxx or $1xxx -- A12 is low or high)
+
+If the tile being fetched is using the right-hand pattern table ($1xxx), then A12 goes high on dot 4 of that
+8-dot sequence.　Otherwise, A12 stays low throughout.
+
+This 8-dot sequence is repeated for each tile.. meaning there are 42 opportunities for A12 to rise.　These
+opportunities occur on the following dots:
+
+4, 12, 20, ..., 244, 252　　　　　　　　 (32 BG tiles)
+260, 268, 276, 284, 292, 300, 308, 316　 (8 Spr tiles)
+324, 332　　　　　　　　　　　　　　　　 (2 BG tiles)
+
+(You might be able to see now how I came up with those 260, 324 numbers I threw at you earlier)
+
+MMC3 seems to ignore rises that are too close together.　This is why the 8 sprite fetches will only clock
+the counter once.　Exactly how far apart the rising edges have to be is unknown, but it is somewhere between
+14 and 16 dots.　So any two consecutive opportunities are too close together (including the most distant
+332->4), but any two non-consecutive opportunities will both be acknowledged.
+
+Figuring whether the tile is being fetched from $0xxx or $1xxx is usually easy.　BG and 8x8 sprites are
+always fetched from an assigned pattern table (configurable by PPU reg $2000).　However, 8x16 sprites can
+come from either pattern table.　So which tile is begin fetched depends on which sprite is being fetched....
+which depends on what scanline you're on, and what sprites are found to be in-range on that scanline.　For
+scanlines which contain less than 8 sprites, tile $FF is fetched as a dummy (in 8x16 sprites, this would be
+from the $1xxx pattern table).
+
+This is why, when you have 8x16 sprites, ALL sprites must use the right-hand pattern table.　If you have
+sprites using the left and the right, you'll probably end up having some scanlines where the IRQ counter
+counts the same scanline multiple times!　All depending on which sprites are in-range and when.　For example,
+if there are 4 sprites on the scanline using $0xxx, and 4 using $1xxx, the IRQ counter might count the
+scanline anywhere from 1 to 4 times!
+
+0,0,0,0,1,1,1,1　 <---　all 4 rises consecutive, will only clock once
+0,1,0,1,0,1,0,1　 <---- all 4 rises nonconsecutive, counter clocked each time!
+
+This is also why the IRQ counter isn't clocked when both BG and sprites use the left pattern table (since
+there is never any rising edge, the MMC3 never detects any scanlines).
+
+
+
+$2006 and $2007
+---------------------------
+A game can manually clock the IRQ counter (either on accident, or by design) by manipulating $2006 and $2007.
+A12 is updated (potentially triggering a rising edge) when the PPU address is updated by these registers.
+On $2007 reads/writes, and on the second $2006 write.　This is why messing with $2006 and $2007 after you
+prep your IRQ stuff may screw up your IRQs unless you're careful.
+
+
+
+
+IRQ Counter priming
+---------------------------
+Some games seem to prime the IRQ counter by repeatedly writing $0000 and $1010 to $2006.　This toggles A12,
+clocking the IRQ counter.　It is unknown whether or not this is actually required.
+
+
+
+Reload value of $00
+---------------------------
+Different MMC3 versions behave differently when you set $C000 to $00.　There are at least two (possibly more)
+behaviors.　These behaviors are mentioned in the readme accompanied with blargg's MMC3 test ROMs, which, if
+you're emudeving, I highly recommend you pick up.　Otherwise, the behavior of having a reload value of $00
+is unreliable and/or undesirable, and should be avoided at all costs when homebrewing/hacking.
+
+
+
+
+特别变种 -- MMC6:
+--------------------------
+
+Startropics 1 和 2 都是 MMC6 游戏 (非 MMC3).　然而,不幸的是他们都 assigned the same mapper
+number, despite being slightly incompatible.　There is no simple way to determine MMC3 from MMC6.　You'll
+probably have to use a CRC or hash check or something.
+
+For the most part they are the same -- but the big difference is the WRAM.　MMC6 has only 1k of WRAM,
+whereas MMC3 games have 8k.　It is also mapped a bit differently, and is enabled/disabled differently from
+MMC3.
+
+MMC6 寄存器如下.　All other registers behave just as they do on MMC3:
+
+
+　$8000:　[CPW. .AAA]
+　　C,P,A = Same as on MMC3
+　　W = WRAM Enable (0=disabled, 1=enabled)
+
+　$A001:　[HhLl ....]
+　　H,L = Enable WRAM block (0=disabled, 1=enabled)
+　　h,l = WRAM block write protect (0=writes disabled, 1=writes enabled)
+
+
+The 1k of WRAM is split into 2 512 byte blocks... one at $7000-71FF and another at $7200-73FF.　Each block
+can be controlled independently through $A001.　H,h bits deal with the high block ($7200), and L,l bits deal
+with the low block ($7000).
+
+If only one block is enabled, the disabled block will read back as $00.　However if BOTH blocks are disabled,
+reading either will return open bus.
+
+$7000-73FF is mirrored throughout $7400-7FFF.　However, $6000-6FFF is always open bus (unmapped).
+
+$8000.5, when clear (to disable WRAM), simply sets $A001 to $00 and keeps it there.　Writing to $A001 when
+$8000.5 is clear will have no effect. 
+
+ 

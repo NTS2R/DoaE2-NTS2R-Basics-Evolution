@@ -1,0 +1,35 @@
+ .ORG $add2
+ ;52DE2为入口程序 本程序
+ ;包含两个特技:速和奋的伤害计算
+ LDA $AE7F,X
+ STA $06
+ STA $F1
+ JSR tejistart
+ 
+ .org $5900
+tejistart
+ JSR $c40c
+ LDA #$0c
+ JSR $e4df ;速的特技
+ ASL
+ PHA
+ BPL nextteji
+ lda #$c0
+ STA $05
+ LDA #$00
+ STA $06
+ JSR $c40c
+
+nextteji
+ PLA
+ ASL
+ BPL end ;奋的特技
+ lda #$80
+ STA $05
+ LDA #$01
+ STA $06
+ JSR $c40c
+end
+ LDA $f1
+ RTS
+ 

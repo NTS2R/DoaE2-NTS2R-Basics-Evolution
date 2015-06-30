@@ -1,0 +1,36 @@
+ .ORG $e0fe
+ 
+ LDY $f1
+ LDA #$09
+ JSR $e4e7
+ 
+ CMP #$00
+ BEQ levelchar
+ LDY $7f
+ STA $66b8,y
+ LDA #$80
+ STA $661c,y
+ 
+ LDY $f1
+ LDA #$0a
+ JSR $e4e7
+ LDY $7f
+ STA $66c4,y
+ JMP $e152
+
+levelchar
+ LDA #$7c
+ JSR $c6e5
+ LDY $602b
+ LDA $9400,y
+ PHA
+ LDA $9500,y
+ LDY $7f
+ STA $66b8,y
+ PLA
+ STA $66c4,y
+ LDA #$80
+ STA $661c,y
+ JSR $c6e1
+ jmp $e152
+ 

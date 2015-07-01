@@ -9,3 +9,6 @@ Todo:
 
 然后会引用一些173氏的文件 173氏个人网站:http://wildplants.es.land.to/
 (中国大陆的用户无法访问 需要VPN代理)
+
+迷恋C制作的修改器项目
+https://github.com/chenyu2202863/nes

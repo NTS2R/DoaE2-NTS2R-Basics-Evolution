@@ -1,4 +1,4 @@
-# DoaE2-NTS2R
+﻿# DoaE2-NTS2R
 A game named DoaE2 expands code
 
 2015-06-30 The project starts in github
@@ -12,3 +12,6 @@ Todo:
 
 迷恋C制作的修改器项目
 https://github.com/chenyu2202863/nes
+
+个人的下载网盘
+http://tsyy.ys168.com

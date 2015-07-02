@@ -1,70 +1,67 @@
 ;7974b 代码设置成 20 1b 5c即可
  .ORG $5c1b
  
+ LDA #$7c
+ JSR $c6e5
+ JMP $be00
+
+ .ORG $be00
+ JSR $c759
+ .org $0601 ;这串代码实际运行在0601 但被储存在be03
  LDA $662B
- BNE ZHENXING
- JMP jieshu2
-ZHENXING
+ BNE Lineup
+ JMP End2
+Lineup
  LDA $75
- BMI zabing
+ BMI Troops
  TAY
- pha
- lda #$7c
- jsr $c6e5
- pla
  LDA $8180,y
  STA $6769
  
- pha
- jsr $c6e1
- PLA
  PHA
  CMP #$09
- bcc tiaozhuan
+ BCC N_Eight
  LDA $ac
-aaa1
+Eight_t1
  ADC $ad
- inc $ad
+ INC $ad
  AND #$0f
  CMP #$05
- BCC aaa1
+ BCC Eight_t1
  CMP #$09
- BCS aaa1
+ BCS Eight_t1
  STA $67af
  
  INC $af
-aaa2
+Eight_t2
  lda $af
  inc $af
  AND #$0f
  CMP #$05
- BCC aaa2
+ BCC Eight_t2
  CMP #$09
- BCS aaa2
+ BCS Eight_t2
  CMP $67af
- beq aaa2
+ beq Eight_t2
  STA $67ad 
 
  
-tiaozhuan
+N_Eight
  PLA
- jmp jieshu
+ JMP End
  
-zabing:
+Troops
  LDA $ac
-beishuichuwai
+False_back_water
  ADC $ad
  INC $ad
  AND #$07
  CMP #$07
- beq beishuichuwai
+ beq False_back_water
  STA $6769
  
-jieshu
+End
  ASL
- PHA
-jisuan
- PLA
  PHA
  CLC
  LDA #$15
@@ -73,7 +70,6 @@ jisuan
  JSR $d277
  .DB $a2
  .DB $00
- 
  lda #$00
  STA $4d
  PLA
@@ -84,20 +80,21 @@ jisuan
  LDA #$15
  ADC $6769
  CMP #$1d
- BNE jieshu2
+ BNE End2
  LDA #$14
  STA $5b
  LDX #$05
-nullxunhuan
+Silent_Cycle
  ASL $0506,x
  LDA $5b
  LSR
  ROR $0506,x
  INX
  CPX #$0a
- bne nullxunhuan
+ BNE Silent_Cycle
  
-jieshu2
+End2
+ JSR $c6e1
  JSR $ff93
  RTS
  

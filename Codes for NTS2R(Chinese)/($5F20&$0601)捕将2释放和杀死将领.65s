@@ -1,0 +1,36 @@
+ .ORG $5f20
+ LDA #$7c
+ JSR $c6e5
+ JMP Start
+ .ORG $bea0
+Start
+ JSR $c759
+ .ORG $0601
+ LDY #$07
+Release_loop
+ LDX $6621,y
+ LDA $9600,x
+ CMP $75
+ BNE N_release_troops
+ LDA #$90
+ STA $6200,x
+N_release_troops
+ INY
+ CPY #$0c
+ BNE Release_loop
+ LDY #$07
+Dead_loop
+ LDX $6621,y
+ LDA $9700,x
+ CMP $75
+ BNE N_dead_troops
+ LDA #$90
+ STA $6200,x
+N_dead_troops
+ INY
+ CPY #$0c
+ BNE Dead_loop
+ JSR $c6e1
+ JMP $A28E
+ 
+ 

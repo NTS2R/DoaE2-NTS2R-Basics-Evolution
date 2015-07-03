@@ -1,31 +1,32 @@
  .ORG $917c
- JSR $57f2
+ JSR Start
  LDA $6621,x
  CMP #$0f
  BNE $9199
  
  
- .ORG $57f2
+ .ORG $5f28
+Start
  LDA #$7C
  JSR $C6E5
- JSR $b100
- JSR $c6e1
- RTS
+ JMP $bee0
+
  
- .ORG $b100
+ .ORG $bee0
+
+ JSR $c759
+ .ORG $0601
  LDA $6621,x
  LDY #$7f
-xunhuan
+Loop
  CMP $9b00,y
- BEQ end
+ BEQ End
  DEY
- BPL xunhuan
+ BPL Loop
+ JSR $c6e1
  RTS
 
-end
- JSR $c759
- PLA
- PLA
+End
  PLA
  PLA
  JSR $c6e1

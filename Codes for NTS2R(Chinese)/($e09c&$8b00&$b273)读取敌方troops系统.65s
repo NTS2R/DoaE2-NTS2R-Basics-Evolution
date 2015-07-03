@@ -1,23 +1,23 @@
  .ORG $e09c
  
- BEQ zayuluanshu
+ BEQ N_troops
  LDA #$7c
  JSR $c6e5
- jmp luojibingliduqudizhi
+ JMP Load_troops
  
-zayuluanshu
+N_troops
  LDA #$7c
  JSR $c6e5
  LDA $ae
-aaa
- CLC
+Loop_n_troops
  ADC $af
- inc $af
+ INC $af
  AND #$0f
  CMP #$00
- beq aaa
+ BEQ Loop_n_troops
  TAY
-luojibingliduqudizhi
+ 
+Load_troops
  LDX $7f
  LDA $ff41,x
  TAX
@@ -32,39 +32,35 @@ luojibingliduqudizhi
  sta $6668,x
  JSR $8b00
  JSR $c6e1
- LDA #$34
- JSR $c6e5
  
  
  .ORG $8b00
  CPY #$10
- bcs jieshu
- STY $580b
- STX $580c
- LDA $602b
- sta $580d
+ BCS Loop_end
+ STY $09
+ STX $08
  LDA #$00
- STA $580a
-wuxianxunhuan
- INC $580a
- lda $580a
- CMP $580d
- BEQ jieshu
+ STA $F3
+Troops_loop
+ INC $f3
+ LDA $f3
+ CMP $602b
+ BEQ Loop_end
  LDY #$00
- LDA $580a
-bijiao
- CMP $5800,y ;0A 14 1E 28 32 3C 46 50 5A 64
- BCC zhengchangtianjia
+ LDA $602b
+Level_loop
+ CMP $8af0,y ;0A 14 1E 28 32 3C 46 50 5A 64
+ BCC Add_troops
  INY
- BNE bijiao
+ BNE Level_loop
  
-zhengchangtianjia
+Add_troops
  TYA
  ASL
  ASL
  ASL
  ASL
- ADC $580b
+ ADC $09
  TAY
  LDA $9180,y
  STA $00
@@ -72,9 +68,9 @@ zhengchangtianjia
  sta $01
  LDA $92c0,y
  STA $02
- LDX $580c
+ LDX $08
  LDA $6666,x
- clc
+ CLC
  ADC $00
  STA $6666,X
  STA $6642,X
@@ -86,7 +82,24 @@ zhengchangtianjia
  ADC $02
  STA $6668,X
  STA $6644,X
- JMP wuxianxunhuan
+ JMP Troops_loop
  
-jieshu
+Loop_end
  RTS
+ 
+ .ORG $b273
+ STA $09
+ JSR $c759
+ LDA #$7c
+ JSR $c6e5
+ LDY $09
+ LDX $08
+ LDA $9000,y
+ STA $6651,x
+ LDA $9080,y
+ STA $6652,x
+ LDA $9100,y
+ STA $6653,x
+ JSR $8b00
+ JSR $c770
+ .db $e3,$b2

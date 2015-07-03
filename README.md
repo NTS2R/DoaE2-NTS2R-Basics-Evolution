@@ -1,7 +1,9 @@
-﻿# DoaE2-NTS2R
+﻿# DoaE2-NTS2R-Basics
 A game named DoaE2 expands code
 
 2015-06-30 The project starts in github
+
+本项目更名为NTS2R Basics 与bbslgp先生的改版便于区分
 
 Todo:
 

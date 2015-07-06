@@ -24,7 +24,7 @@ Dead_loop
  LDA $9700,x
  CMP $75
  BNE N_dead_troops
- LDA #$90
+ LDA #$00
  STA $6200,x
 N_dead_troops
  INY

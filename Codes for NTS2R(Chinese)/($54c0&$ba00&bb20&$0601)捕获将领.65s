@@ -1,0 +1,236 @@
+ .ORG $54c0
+  
+Start
+ CPX #$00
+ BEQ N_poople_get
+ LDA $f3
+ AND #$03
+ BEQ Get_poople ;这是利用随机参数来限制武将捕获
+ 
+N_poople_get
+ JMP $a28e
+ 
+Get_poople 
+ LDA #$7C
+ JSR $C6E5
+ JMP Forced
+ 
+Option_kill
+ LDA #$7C
+ JSR $C6E5
+ JMP Option_yes
+ 
+ 
+ .ORG $ba00
+Forced
+ STX $6628
+ TXA
+ LDY #$7f
+Forced_get;循环判断是否无法强制录用
+ CMP $9A00,y
+ BEQ Forced_not_get;特殊武将强制无法录用
+ DEY
+ BPL Forced_get
+ JMP Next_get
+Forced_not_get
+ JSR $c759
+ JSR $c6e1
+ INC $7c
+ LDY $7c
+ CPY #$0c
+ BEQ No_get_end
+ JMP $a284
+No_get_end
+ JMP $a28e
+
+
+ 
+Next_get
+ JSR $c759
+ .ORG $0601
+ JSR $c6e1
+ LDA $6200,x
+ CMP #$90
+ BNE No_get_in_any_time;非可捕获武将录用不可
+ JSR $d285
+ .DB $7C
+ .DB $03
+;定义语句  捕获了敌武将某某某，要怎么办？
+ JSR $CB1B
+ BCC Button ;按下按钮
+ JMP Option_kill
+Button_B;按钮B跳转
+ JMP Run_away
+Button
+ BCS Button_B
+ LDA $ad
+ ADC $ae
+ STA $ad
+ AND #$0f
+ CMP #$03
+ BCS Branch_need_nothing
+ JSR $d277
+ .DB $75
+ .DB $03
+;定义语句 这个是敌将逃跑的分支吧
+No_get_in_any_time
+ JMP End_deal
+
+Branch_need_nothing
+ CMP #$06
+ BCS Branch_need_money
+ JSR $d277
+ .DB $76
+ .DB $03
+;定义语句 也好 无条件加入
+ JMP Join_army
+ 
+Branch_need_money
+ CMP #$0C
+ BCS Branch_need_horse
+ LDA $6010
+ STA $01
+ STA $05
+ JSR $C408
+ LDY $7C
+ LDA $667C,Y
+ STA $05
+ JSR $C408
+ JSR $C1CC
+ .DB $00
+ .DB $00
+;显示破255以上的金钱代码程式
+ JSR $d277
+ .DB $7e
+ .DB $03
+;已定义 对方要求某某金，给否？
+ JSR $cb1b
+ BCS Click_button_B
+ JMP Decrease_money
+ 
+Branch_need_horse
+ JSR $d277
+ .DB $78
+ .DB $03
+;定义语句 这个是对方要白马的分支
+ JSR $d277
+ .DB $7D
+ .DB $03
+;定义语句 敌将要白马，这个是是否给对方
+ JSR $CB1B
+ BCC Click_button_A
+ JMP Click_button_B
+ 
+Click_button_A
+ LDA #$51
+ JSR $edf3
+ BCS Decrease_a_horse
+ LDA #$d1
+ JSR $edf3
+ BCS Decrease_a_horse
+ JSR $d285
+ .DB $79
+ .DB $03
+;定义语句 答应给白马但是实际上身上并没有的情况
+ JMP End_deal
+Decrease_a_horse
+ JMP Join_army
+ 
+Click_button_B
+ JSR $d285
+ .DB $7A
+ .DB $03
+;定义语句 这是拒绝对方要钱或要白马时的情况
+ JMP End_deal
+ 
+Run_away
+ JSR $d277
+ .DB $7B
+ .DB $03
+;(待定)定义语句
+;XX武将逃跑了
+End_deal
+ INC $7c
+ LDY $7c
+ CPY #$0c
+ BEQ End
+ JMP $a284
+End
+ JMP $a28e
+
+Decrease_money
+ JSR $FEE2
+ .DB $2c
+ .DB $60
+ BCS Join_army
+ JSR $feb4
+ .DB $2c
+ .DB $60
+ JSR $d277
+ .DB $7f
+ .DB $03
+;定义语句 钱不足了 
+ JMP End_deal
+
+Join_army
+ JSR $C70E
+ LDA #$03
+ STA $72
+ LDY $7C 
+ LDA $6621,Y
+ STA $05F3
+ JSR $8003
+ JSR $D277
+ .DB $77
+ .DB $03
+;(待定)定义语句
+;成功加入的分支，某某某加入我军
+ JSR $C712
+ JMP End_deal
+
+ .ORG $bb20
+Option_yes
+ JSR $c759
+ JSR $c6e1
+ JSR $d277
+ .DB $80
+ .DB $03
+;(待定)定义语句
+;是否斩杀敌将
+ JSR $CB1B
+ BCC Click_dead_button
+Click_dead_button_B
+ lda #$00
+ BEQ Dead_end
+Click_dead_button
+ BCS Click_dead_button_B
+ LDY $7C 
+ LDA $6621,Y
+ TAY
+ LDA #$00
+ STA $6200,Y
+ JSR $d277
+ .DB $81
+ .DB $03
+;(待定)定义语句
+;已斩杀敌将
+ LDA #$00
+ BEQ Kill_end_deal
+Dead_end
+  JSR $d277
+ .DB $82
+ .DB $03
+;(待定)定义语句
+;敌将已离去
+Kill_end_deal
+ INC $7c
+ LDY $7c
+ CPY #$0c
+ BEQ Kill_end
+ JMP $a284
+Kill_end
+ JMP $a28e
+
+
+
+ 

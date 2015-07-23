@@ -1,0 +1,134 @@
+;79ef5 设置成 4c 25 5b
+;$6034 行动次数判定 
+;$6035 总行次数判定 新内存计数
+;$603f 临时计数器
+ .ORG $9ee5
+ JMP Start
+
+ .org $54dd
+Start
+ LDA #$40
+ STA $6740,X;确定武将行动完毕
+ 
+ LDA $6034
+ BEQ Get_count ;判断6034的值 
+Attack
+ LDA #$00
+ LDX $0078
+ STA $6740,x
+ DEC $6034
+ BNE No_zero_count;继续运算
+ LDA #$40
+ STA $6740,x
+ JMP $9f02
+No_zero_count
+ LDA #$14
+ JSR $E4DF
+ BPL Normal_attack;正常攻击
+ LDX $78
+ LDA $6754,x
+ CMP #$09
+ bcc Check_bounds
+ LDA #$04
+ STA $6754,x
+ JMP Out_of_bounds
+Check_bounds
+ CMP #$04
+ BCC Out_of_bounds
+ LDA #$ff
+ STA $6754,x
+Out_of_bounds:
+ INC $6754,x
+
+Normal_attack:
+ LDY $78
+ LDx $6754,y
+ INC $5810,x
+ JSR $a862
+ JMP $9d38
+ 
+ 
+ 
+Get_count
+ LDA #$0c
+ JSR $e4df
+ STA $603f
+ LDA #$7c
+ JSR $c6e5
+ JSR Get_count_num
+ JSR $c6e1
+ JMP Attack
+
+ 
+ 
+ .ORG $bb90
+Get_count_num
+ LDA $603f
+ AND #$07
+ TAX
+ LDA $bb70,x;读取武器本身攻击次数
+ STA $6034
+ 
+ LDY $4a
+ LDA $6621,y
+ TAY
+ LDA $8000,Y;读取武将攻击次数
+ CLC
+ ADC $6034
+ STA $6034
+ 
+ LDA $7a
+ BNE Get_lineup;判断人物归属(敌方/我方)
+ JSR $e035
+ TYA
+ ASL
+ ASL
+ TAX
+ LDA $6174,x;读取装备武器参数
+ TAX
+ CMP #$00
+ BEQ Get_lineup
+ LDA $8080,x
+ CLC
+ ADC $6034
+ STA $6034
+
+Get_lineup:
+ LDX $7a
+ LDA $6768,x
+ TAX
+ LDA $bb60,x
+ CLC
+ ADC $6034
+ STA $6034
+ STA $6035
+ 
+ LDA $603f
+ ASL
+ BPL Get_equip 
+ ASL $6034
+ ASL $6035
+ 
+Get_equip
+ LDA $4a
+ tax
+ LDY $ff60,x
+ LDX #$05
+Loop_equip
+ LDA $60cc,y
+ CMP #$ce
+ BEQ Double_equip
+ INY
+ DEX
+ BPL Loop_equip
+ BMI Count_end
+Double_equip
+ ASL $6034
+ ASL $6035
+Count_end
+ RTS
+ 
+
+ 
+
+

@@ -1,0 +1,19 @@
+   :5F00:A0 00     LDY #$00
+>  :5F02:B9 E0 5F  LDA $5FE0,Y @ $5FE0 = #$0C
+   :5F05:C5 75     CMP $0075 = #$0C
+   :5F07:F0 03     BEQ $5F0C
+   :5F09:C8        INY
+
+   :5F0A:D0 F6     BNE $5F02
+   :5F0C:B9 F8 5F  LDA $5FF8,Y @ $5FF8 = #$30
+   :5F0F:20 46 C7  JSR $C746
+   :5F12:98        TYA
+   :5F13:AA        TAX
+   :5F14:B9 E8 5F  LDA $5FE8,Y @ $5FE8 = #$A8
+   :5F17:A8        TAY
+   :5F18:20 38 C8  JSR $C838
+   :5F1B:BD F0 5F  LDA $5FF0,X @ $5FF0 = #$02
+   :5F1E:AA        TAX
+   :5F1F:60        RTS -----------------------------------------
+
+ 1E:9FF9:20 00 5F  JSR $5F00

@@ -1,0 +1,29 @@
+ .ORG $5efb
+start:
+ LDY #$00
+Loop:
+ LDA $5fe0,y
+ CMP $75
+ BEQ LoadOthers
+ INY
+ BNE Loop
+
+LoadOthers:
+ LDA $5ff8,y
+ JSR $c746
+ .DB $98
+ .DB $aa
+ LDA $5fe8,y
+ TAY
+ JSR $c838
+ LDA $5ff0,x
+ TAX
+ RTS
+ 
+ .ORG $9ff9
+ JSR start
+ NOP
+ NOP
+ NOP
+ NOP
+ 

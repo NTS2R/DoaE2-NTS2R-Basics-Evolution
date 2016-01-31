@@ -1,0 +1,17 @@
+
+ .ORG $5f80
+ LDA $43
+ STA $45
+ PLA
+ STA $f3
+ PLA
+ STA $f4
+ LDY #$01
+loop:
+ LDA ($f3),y
+ STA $5c30,y
+ INY
+ BPL loop
+ JMP $5c30
+ 
+ 

@@ -1,0 +1,208 @@
+   :5422:A4 53     LDY $0053 = #$04
+>  :5424:B1 51     LDA ($51),Y @ $8434 = #$F8
+   :5426:C5 F8     CMP $00F8 = #$00		//这个bug 原来汉化的错误 一昂该是cmp #$F8
+   :5428:90 07     BCC $5431
+   :542A:20 43 54  JSR $5443
+   :542D:A4 53     LDY $0053 = #$04
+   :542F:B1 51     LDA ($51),Y @ $8434 = #$F8
+   :5431:4C 9D D4  JMP $D49D
+
+
+ 3F:D499:4C 22 54  JMP $5422
+ 3F:D49C:EA        NOP
+>3F:D49D:C9 F8     CMP #$F8
+ 3F:D49F:D0 42     BNE $D4E3
+ 3F:D4A1:A9 D4     LDA #$D4
+ 3F:D4A3:48        PHA
+ 3F:D4A4:A9 DA     LDA #$DA
+ 3F:D4A6:48        PHA
+ 3F:D4A7:C8        INY
+ 3F:D4A8:B1 51     LDA ($51),Y @ $8434 = #$F8
+ 3F:D4AA:85 F3     STA $00F3 = #$08
+ 3F:D4AC:C8        INY
+ 3F:D4AD:B1 51     LDA ($51),Y @ $8434 = #$F8
+ 3F:D4AF:20 B5 D4  JSR $D4B5
+ 3F:D4B2:4C D2 D4  JMP $D4D2
+
+
+ 3F:D4B5:30 16     BMI $D4CD
+ 3F:D4B7:48        PHA
+ 3F:D4B8:29 40     AND #$40
+ 3F:D4BA:D0 08     BNE $D4C4
+ 3F:D4BC:68        PLA
+ 3F:D4BD:09 80     ORA #$80
+ 3F:D4BF:85 F4     STA $00F4 = #$01
+ 3F:D4C1:A9 38     LDA #$38
+ 3F:D4C3:60        RTS -----------------------------------------
+ 3F:D4C4:68        PLA
+ 3F:D4C5:18        CLC
+ 3F:D4C6:69 40     ADC #$40
+ 3F:D4C8:85 F4     STA $00F4 = #$01
+ 3F:D4CA:A9 3A     LDA #$3A
+ 3F:D4CC:60        RTS -----------------------------------------
+ 3F:D4CD:85 F4     STA $00F4 = #$01
+ 3F:D4CF:A9 3C     LDA #$3C
+ 3F:D4D1:60        RTS ----------------------------------------- //利用模块化功能 变正常映射并且写入正确的切页
+
+ 3F:D4D2:20 E3 C6  JSR $C6E3
+ 3F:D4D5:C8        INY
+ 3F:D4D6:84 53     STY $0053 = #$04
+ 3F:D4D8:6C F3 00  JMP ($00F3) = $0108		//跳转代码
+
+
+ 3F:D2DE:20 25 D4  JSR $D425
+ 3F:D2E1:A9 02     LDA #$02
+ 3F:D2E3:18        CLC
+ 3F:D2E4:65 56     ADC $0056 = #$00
+ 3F:D2E6:20 B5 D7  JSR $D7B5
+ 3F:D2E9:A9 F9     LDA #$F9
+ 3F:D2EB:20 D5 D7  JSR $D7D5
+ 3F:D2EE:20 ED D7  JSR $D7ED
+
+ 3F:D2F1:A5 68     LDA $0068 = #$02
+ 3F:D2F3:18        CLC
+ 3F:D2F4:69 21     ADC #$21
+ 3F:D2F6:85 68     STA $0068 = #$02
+
+
+ 3F:D2FA:B1 51     LDA ($51),Y @ $89CB = #$4E
+ 3F:D2FC:C9 F9     CMP #$F9
+ 3F:D2FE:D0 35     BNE $D335			//不是F9 不是调取指令的离开
+ 3F:D300:C8        INY
+ 3F:D301:B1 51     LDA ($51),Y @ $89CB = #$4E
+ 3F:D303:85 F3     STA $00F3 = #$00
+ 3F:D305:C8        INY
+ 3F:D306:B1 51     LDA ($51),Y @ $89CB = #$4E
+ 3F:D308:30 1C     BMI $D326			//大于80即正常跳转
+
+ 3F:D30A:48        PHA
+ 3F:D30B:29 40     AND #$40			//40与运算 要是40就会跳转到d31a
+ 3F:D30D:D0 0B     BNE $D31A
+
+ 3F:D30F:68        PLA
+ 3F:D310:09 80     ORA #$80			//变相高位置1 变成正常映射
+ 3F:D312:85 F4     STA $00F4 = #$BC
+ 3F:D314:20 0A C7  JSR $C70A			//跳转到正确的逻辑地址 $38页被切入
+ 3F:D317:4C 2B D3  JMP $D32B
+
+ 3F:D31A:68        PLA
+ 3F:D31B:18        CLC
+ 3F:D31C:69 40     ADC #$40
+ 3F:D31E:85 F4     STA $00F4 = #$BC
+ 3F:D320:20 0E C7  JSR $C70E			//40+40变80 跳转到正确的逻辑地址 $3a页被切入
+ 3F:D323:4C 2B D3  JMP $D32B
+
+ 3F:D326:85 F4     STA $00F4 = #$BC
+ 3F:D328:20 12 C7  JSR $C712			//变相恢复$3c页
+
+ 3F:D32B:A9 00     LDA #$00
+ 3F:D32D:85 53     STA $0053 = #$00
+ 3F:D32F:20 D8 D0  JSR $D0D8
+ 3F:D332:6C F3 00  JMP ($00F3) = $BC00		//跳转到执行代码的地方
+
+
+ 3F:D335:C9 EE     CMP #$EE
+ 3F:D337:D0 04     BNE $D33D
+ 3F:D339:A9 80     LDA #$80
+ 3F:D33B:D0 06     BNE $D343
+ 3F:D33D:C9 EF     CMP #$EF
+ 3F:D33F:D0 10     BNE $D351
+ 3F:D341:A9 00     LDA #$00
+ 3F:D343:85 F3     STA $00F3 = #$00
+ 3F:D345:98        TYA
+ 3F:D346:18        CLC
+ 3F:D347:69 02     ADC #$02
+ 3F:D349:48        PHA
+ 3F:D34A:C8        INY
+ 3F:D34B:B1 51     LDA ($51),Y @ $89CB = #$4E
+ 3F:D34D:A8        TAY
+ 3F:D34E:4C 6F D3  JMP $D36F
+
+
+ 3F:D351:C9 E9     CMP #$E9
+ 3F:D353:D0 07     BNE $D35C
+ 3F:D355:AE 78 60  LDX $6078 = #$06
+ 3F:D358:A9 00     LDA #$00
+ 3F:D35A:F0 08     BEQ $D364
+ 3F:D35C:C9 E8     CMP #$E8
+ 3F:D35E:D0 37     BNE $D397
+
+ 3F:D360:A2 07     LDX #$07
+ 3F:D362:A9 80     LDA #$80
+ 3F:D364:85 F3     STA $00F3 = #$FA
+ 3F:D366:BD 21 66  LDA $6621,X @ $662A = #$FB
+ 3F:D369:AA        TAX
+ 3F:D36A:C8        INY
+ 3F:D36B:98        TYA
+ 3F:D36C:48        PHA
+ 3F:D36D:8A        TXA
+ 3F:D36E:A8        TAY
+ 3F:D36F:A5 51     LDA $0051 = #$62
+ 3F:D371:48        PHA
+ 3F:D372:A5 52     LDA $0052 = #$87
+ 3F:D374:48        PHA
+ 3F:D375:A5 43     LDA $0043 = #$3C
+ 3F:D377:48        PHA
+ 3F:D378:20 12 C7  JSR $C712
+ 3F:D37B:A5 F3     LDA $00F3 = #$FA
+ 3F:D37D:20 C9 AD  JSR $ADC9
+ 3F:D380:A5 46     LDA $0046 = #$2A
+ 3F:D382:20 E5 C6  JSR $C6E5
+ 3F:D385:68        PLA
+ 3F:D386:85 43     STA $0043 = #$3C
+ 3F:D388:68        PLA
+ 3F:D389:85 52     STA $0052 = #$87
+ 3F:D38B:68        PLA
+ 3F:D38C:85 51     STA $0051 = #$62
+ 3F:D38E:68        PLA
+ 3F:D38F:85 53     STA $0053 = #$04
+ 3F:D391:20 F7 D3  JSR $D3F7
+ 3F:D394:4C DE D2  JMP $D2DE
+
+
+ 3F:D397:20 51 D4  JSR $D451
+>3F:D39A:20 02 DD  JSR $DD02
+
+
+
+
+ 3F:D3A1:C9 FE     CMP #$FE
+ 3F:D3A3:B0 23     BCS $D3C8
+ 3F:D3A5:48        PHA
+ 3F:D3A6:A5 56     LDA $0056 = #$00
+ 3F:D3A8:C9 04     CMP #$04
+ 3F:D3AA:D0 03     BNE $D3AF
+ 3F:D3AC:20 E4 D5  JSR $D5E4
+ 3F:D3AF:68        PLA
+
+
+
+ 3F:D3B0:C9 FD     CMP #$FD
+ 3F:D3B2:F0 06     BEQ $D3BA
+ 3F:D3B4:C9 FC     CMP #$FC
+ 3F:D3B6:D0 0B     BNE $D3C3
+ 3F:D3B8:E6 5F     INC $005F = #$00
+ 3F:D3BA:20 CA D6  JSR $D6CA
+ 3F:D3BD:20 0D D7  JSR $D70D
+ 3F:D3C0:4C DE D2  JMP $D2DE
+
+ 3F:D3C3:E6 1B     INC $001B = #$00
+ 3F:D3C5:4C DE D2  JMP $D2DE			//loop对话
+
+保护现场？
+ 3F:D0D8:A0 5F     LDY #$5F
+ 3F:D0DA:B9 00 03  LDA $0300,Y @ $0302 = #$0A
+ 3F:D0DD:99 80 01  STA $0180,Y @ $0182 = #$0A
+ 3F:D0E0:88        DEY
+ 3F:D0E1:10 F7     BPL $D0DA
+ 3F:D0E3:A5 56     LDA $0056 = #$00
+ 3F:D0E5:85 57     STA $0057 = #$00
+ 3F:D0E7:A5 1B     LDA $001B = #$00
+ 3F:D0E9:85 1C     STA $001C = #$00
+ 3F:D0EB:A0 03     LDY #$03
+ 3F:D0ED:B9 0C 00  LDA $000C,Y @ $000E = #$01
+ 3F:D0F0:99 39 00  STA $0039,Y @ $003B = #$80
+ 3F:D0F3:88        DEY
+ 3F:D0F4:10 F7     BPL $D0ED
+ 3F:D0F6:60        RTS -----------------------------------------
+

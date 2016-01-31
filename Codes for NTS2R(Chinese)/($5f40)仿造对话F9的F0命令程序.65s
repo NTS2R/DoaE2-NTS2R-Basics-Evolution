@@ -1,0 +1,43 @@
+;F9·ÂÔìÈë¿Ú
+
+ .ORG $5f40
+ 
+F9start:
+ LDA ($51),y
+ CMP #$f9
+ BNE f0start
+ JMP $d300
+ 
+f0start:
+ CMP #$f0
+ BEQ judgef0start
+ JMP $d335
+ 
+judgef0start:
+ INY
+ LDA ($51),y
+ BPL Too_f9_f0
+ DEY
+ JMP $d335
+ 
+Too_f9_f0:
+ PHA
+ INY
+ LDA ($51),y
+ STA $f3
+ INY
+ LDA ($51),y
+ STA $f4
+ PLA
+ AND #$7f
+ JSR $c6e3
+ LDA #$00
+ STA $53
+ JSR $d0d8
+ JMP ($00f3)
+ 
+ .ORG $d2fa
+ JMP F9start
+ 
+ 
+ 

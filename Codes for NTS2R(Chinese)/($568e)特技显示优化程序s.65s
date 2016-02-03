@@ -1,0 +1,11 @@
+ .ORG $568e
+  LDA #$7C
+  JSR $C6E3
+  JSR According_to_the_text 
+  LDA #$3C
+  JSR $C6E3
+  RTS
+  
+ .ORG $8b70
+According_to_the_text: ;文字程序所在地 f8b80
+  

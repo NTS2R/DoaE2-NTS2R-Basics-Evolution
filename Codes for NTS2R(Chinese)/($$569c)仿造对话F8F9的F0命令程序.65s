@@ -1,0 +1,85 @@
+;F9·ÂÔìÈë¿Ú
+
+ .ORG $569c
+ 
+F9start:
+ LDA ($51),y
+ CMP #$f9
+ BNE f09start
+ JMP $d300
+ 
+f09start:
+ CMP #$f0
+ BEQ judgef09start
+ JMP $d335
+ 
+judgef09start:
+ INY
+ LDA ($51),y
+ BPL Too_f9_f0
+ DEY
+ JMP $d335
+ 
+Too_f9_f0:
+ PHA
+ INY
+ LDA ($51),y
+ STA $f3
+ INY
+ LDA ($51),y
+ STA $f4
+ PLA
+ AND #$7f
+ JSR $c6e3
+ LDA #$00
+ STA $53
+ JSR $d0d8
+ JMP ($00f3)
+
+F8start:
+ CMP #$f8
+ BNE f08start
+ JMP $d4a1
+ 
+f08start:
+ CMP #$f0
+ BEQ judgef08start
+ CMP #$f8
+ JMP $d4e3
+ 
+judgef08start:
+ INY
+ LDA ($51),y
+ BMI Too_f8_f0
+ DEY
+ JMP $d4e3
+ 
+Too_f8_f0:
+ LDA #$D4
+ PHA
+ LDA #$DA
+ PHA
+ LDA ($51),y
+ PHA
+ INY
+ LDA ($51),y
+ STA $f3
+ INY
+ LDA ($51),y
+ STA $f4
+ PLA
+ AND #$7f
+ JSR $c6e3
+ INY
+ STY $53
+ JMP ($00f3)
+ 
+ .ORG $d2fa
+ JMP F9start
+ .ORG $d49d
+ JMP F8start
+ 
+ 
+ 
+ 
+ 

@@ -1,0 +1,119 @@
+是时东风大作FB
+东吴无数火船撞入FB
+水寨FD
+火助风威0A0A风助火势FB
+船如箭发0A0A烟焰涨天FD
+曹寨中船只一时尽着FB
+被铁环锁住无处逃避FD
+三江面上0A0A火逐风飞FB
+一派通红0A0A漫天彻地FD
+F926AD
+
+ 1E:AD26:20 EC C3  JSR $C3EC
+ 1E:AD29:20 D0 E5  JSR $E5D0
+ 1E:AD2C:20 F8 C3  JSR $C3F8
+ 1E:AD2F:20 79 A8  JSR $A879
+
+ 1E:AD32:20 49 AD  JSR $AD49
+ 1E:AD35:A9 82     LDA #$82
+ 1E:AD37:A2 74     LDX #$74
+ 1E:AD39:A0 87     LDY #$87
+ 1E:AD3B:4C B9 AD  JMP $ADB9
+
+ 1E:ADB9:20 C9 AD  JSR $ADC9
+ 1E:ADBC:20 FA F2  JSR $F2FA
+ 1E:ADBF:A9 01     LDA #$01
+ 1E:ADC1:85 7A     STA $007A = #$00
+ 1E:ADC3:20 B0 D6  JSR $D6B0
+ 1E:ADC6:4C 79 A8  JMP $A879
+
+0E啊0A0A怎么回事FB
+我们被庞统骗了FB
+上岸FD
+曹操回观岸上营寨FB
+几处烟火0A0A欲逃上岸FB
+却被吴将黄蓋追袭FD
+曹将张辽驾小船沖来FB
+箭射黄蓋0A0A救出曹操FD
+左边出现韩当0A0A蒋钦FB
+右边出现周泰0A0A陈武FD
+正中是周瑜大队人马FB
+一齐杀将过来FD
+F93EAD
+
+ 1E:AD3E:20 79 AD  JSR $AD79
+ 1E:AD41:20 49 AD  JSR $AD49
+
+ 1E:AD44:20 77 D2  JSR $D277
+ 1E:AD47:75 02     ADC $02,X @ $0002 = #$D8
+
+火须兵应0A0A兵仗火威FB
+曹军中枪着箭0A0A火焚FB
+水溺者0A0A不计其数FD
+曹操与张辽引百余骑FB
+正在火林内行走FD
+背后一军赶到FB
+大叫曹贼休走FB
+火光中现出吕蒙旗号FD
+操急令张辽断后FB
+却见火把又起FB
+凌统斜刺杀出FD
+曹操肝胆皆裂FB
+F9AD79
+
+获取智力
+ 1E:ADA1:A2 04     LDX #$04
+ 1E:ADA3:BD 10 66  LDA $6610,X @ $6610 = #$00
+ 1E:ADA6:C9 02     CMP #$02
+ 1E:ADA8:F0 03     BEQ $ADAD
+ 1E:ADAA:CA        DEX
+ 1E:ADAB:10 F6     BPL $ADA3
+ 1E:ADAD:86 78     STX $0078 = #$00
+ 1E:ADAF:A9 05     LDA #$05
+ 1E:ADB1:85 79     STA $0079 = #$00//标示敌人战斗临时番号
+ 1E:ADB3:A9 01     LDA #$01
+ 1E:ADB5:9D 40 67  STA $6740,X @ $6740 = #$00//标示敌人
+ 1E:ADB8:60        RTS -----------------------------------------
+
+火攻
+ 1E:AD49:20 A1 AD  JSR $ADA1
+ 1E:AD4C:A9 0C     LDA #$0C
+ 1E:AD4E:9D 70 67  STA $6770,X @ $6770 = #$00
+ 1E:AD51:A0 A8     LDY #$A8
+ 1E:AD53:20 38 C8  JSR $C838
+ 1E:AD56:20 43 C3  JSR $C343
+ 1E:AD59:A9 30     LDA #$30
+ 1E:AD5B:20 46 C7  JSR $C746
+ 1E:AD5E:A2 02     LDX #$02
+ 1E:AD60:20 41 F3  JSR $F341
+ 1E:AD63:20 30 E0  JSR $E030
+ 1E:AD66:84 4B     STY $004B = #$00
+ 1E:AD68:20 53 F3  JSR $F353
+ 1E:AD6B:3C        UNDEFINED
+ 1E:AD6C:80        UNDEFINED
+ 1E:AD6D:20 5E E3  JSR $E35E
+ 1E:AD70:E6 79     INC $0079 = #$00
+ 1E:AD72:A5 79     LDA $0079 = #$00
+ 1E:AD74:C9 0A     CMP #$0A
+ 1E:AD76:D0 E1     BNE $AD59
+ 1E:AD78:60        RTS -----------------------------------------
+
+兵器杀
+ 1E:AD79:20 A1 AD  JSR $ADA1
+ 1E:AD7C:A9 0D     LDA #$0D
+ 1E:AD7E:9D 70 67  STA $6770,X @ $6770 = #$00
+ 1E:AD81:A9 25     LDA #$25
+ 1E:AD83:20 46 C7  JSR $C746
+ 1E:AD86:A2 0A     LDX #$0A
+ 1E:AD88:20 41 F3  JSR $F341
+ 1E:AD8B:20 30 E0  JSR $E030
+ 1E:AD8E:84 4B     STY $004B = #$00
+ 1E:AD90:20 53 F3  JSR $F353
+ 1E:AD93:3C        UNDEFINED
+ 1E:AD94:80        UNDEFINED
+ 1E:AD95:20 5E E3  JSR $E35E
+ 1E:AD98:E6 79     INC $0079 = #$00
+ 1E:AD9A:A5 79     LDA $0079 = #$00
+ 1E:AD9C:C9 0A     CMP #$0A
+ 1E:AD9E:D0 E1     BNE $AD81
+ 1E:ADA0:60        RTS -----------------------------------------

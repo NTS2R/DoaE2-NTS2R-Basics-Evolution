@@ -1,0 +1,94 @@
+EB55
+
+ 3F:EA19:B1 06     LDA ($06),Y @ $903B = #$12
+ 3F:EA1B:C8        INY
+>3F:EA1C:90 02     BCC $EA20
+ 3F:EA1E:B1 06     LDA ($06),Y @ $903B = #$12	//获取第一个或者第二个对话 靠子程序eb55确定
+ 3F:EA20:9D E0 05  STA $05E0,X @ $05E7 = #$40
+ 3F:EA23:C8        INY
+
+
+
+ 3F:EB55:48        PHA
+ 3F:EB56:A6 47     LDX $0047 = #$02
+ 3F:EB58:BD 60 63  LDA $6360,X @ $6367 = #$06
+ 3F:EB5B:A6 A2     LDX $00A2 = #$07
+ 3F:EB5D:4A        LSR
+ 3F:EB5E:68        PLA
+ 3F:EB5F:60        RTS -----------------------------------------	//确定方法是内存6360+y的最后一位flag
+
+
+余下的不分析 大致就是读取站桩角色的信息 内存分布
+
+
+ 3F:E9D2:29 0F     AND #$0F
+ 3F:E9D4:9D 60 05  STA $0560,X @ $0567 = #$0C
+
+ 3F:E9D7:B1 06     LDA ($06),Y @ $9037 = #$01
+ 3F:E9D9:29 F0     AND #$F0
+ 3F:E9DB:4A        LSR
+ 3F:E9DC:4A        LSR
+ 3F:E9DD:85 F3     STA $00F3 = #$24
+ 3F:E9DF:C8        INY
+
+>3F:E9E0:B1 06     LDA ($06),Y @ $9037 = #$01
+ 3F:E9E2:9D 70 05  STA $0570,X @ $0577 = #$32
+ 3F:E9E5:BD D0 05  LDA $05D0,X @ $05D7 = #$00
+ 3F:E9E8:29 83     AND #$83
+ 3F:E9EA:05 F3     ORA $00F3 = #$24
+ 3F:E9EC:9D D0 05  STA $05D0,X @ $05D7 = #$00
+ 3F:E9EF:C8        INY
+
+ 3F:E9F0:B1 06     LDA ($06),Y @ $9037 = #$01
+ 3F:E9F2:4A        LSR
+ 3F:E9F3:4A        LSR
+ 3F:E9F4:4A        LSR
+ 3F:E9F5:4A        LSR
+ 3F:E9F6:85 F3     STA $00F3 = #$24
+ 3F:E9F8:29 0C     AND #$0C
+ 3F:E9FA:09 80     ORA #$80
+ 3F:E9FC:9D 00 05  STA $0500,X @ $0507 = #$00
+ 3F:E9FF:A5 F3     LDA $00F3 = #$24
+ 3F:EA01:20 B2 C8  JSR $C8B2
+
+ 3F:EA04:B1 06     LDA ($06),Y @ $9037 = #$01
+ 3F:EA06:29 0F     AND #$0F
+ 3F:EA08:9D 80 05  STA $0580,X @ $0587 = #$0A
+ 3F:EA0B:C8        INY
+
+ 3F:EA0C:B1 06     LDA ($06),Y @ $9037 = #$01
+ 3F:EA0E:85 08     STA $0008 = #$02
+ 3F:EA10:29 1F     AND #$1F
+ 3F:EA12:9D 90 05  STA $0590,X @ $0597 = #$1E
+ 3F:EA15:C8        INY
+ 3F:EA16:20 55 EB  JSR $EB55
+
+ 3F:EA19:B1 06     LDA ($06),Y @ $9037 = #$01
+ 3F:EA1B:C8        INY
+ 3F:EA1C:90 02     BCC $EA20
+
+ 3F:EA1E:B1 06     LDA ($06),Y @ $9037 = #$01
+ 3F:EA20:9D E0 05  STA $05E0,X @ $05E7 = #$40
+ 3F:EA23:C8        INY
+ 3F:EA24:A5 08     LDA $0008 = #$02
+ 3F:EA26:29 40     AND #$40
+ 3F:EA28:D0 02     BNE $EA2C
+ 3F:EA2A:E6 05     INC $0005 = #$05
+ 3F:EA2C:A5 05     LDA $0005 = #$05
+ 3F:EA2E:9D 10 05  STA $0510,X @ $0517 = #$07
+ 3F:EA31:BD D0 05  LDA $05D0,X @ $05D7 = #$00
+ 3F:EA34:29 20     AND #$20
+ 3F:EA36:F0 19     BEQ $EA51
+ 3F:EA38:B1 06     LDA ($06),Y @ $9037 = #$01
+ 3F:EA3A:C9 5E     CMP #$5E
+ 3F:EA3C:90 13     BCC $EA51
+ 3F:EA3E:D0 04     BNE $EA44
+ 3F:EA40:A9 00     LDA #$00
+ 3F:EA42:F0 02     BEQ $EA46
+ 3F:EA44:A9 80     LDA #$80
+ 3F:EA46:9D A0 05  STA $05A0,X @ $05A7 = #$8E
+ 3F:EA49:BD F0 61  LDA $61F0,X @ $61F7 = #$00
+ 3F:EA4C:09 80     ORA #$80
+ 3F:EA4E:9D F0 61  STA $61F0,X @ $61F7 = #$00
+ 3F:EA51:A5 08     LDA $0008 = #$02
+ 3F:EA53:29 40     AND #$40

@@ -1,7 +1,7 @@
- .ORG $5cbb
+ .ORG $5c80
  
  
- JSR $C408
+ JSR $C40C
  LDA #$0c
  JSR $e4df
  ASL
@@ -12,7 +12,7 @@
  STA $05
  LDA #$00
  STA $06
- JSR $C408
+ JSR $C40C
  ASL $00
  ROL $01
  ROL $02
@@ -28,11 +28,13 @@ END
  STA $05
  LDA #$00
  STA $06
- JSR $C408
+ JSR $C40C
 next
  LDA $00
  PHA
  LDA $01
+ PHA
+ LDA $02
  PHA
  LDA #$00
  STA $01
@@ -50,11 +52,12 @@ next
  STA $05
  LDA #$00
  STA $06
+ PLA
  STA $02
  PLA
  STA $01
  PLA
  STA $00
- JSR $c408
+ JSR $c40C
  RTS
  
